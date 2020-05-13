@@ -1,18 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="
-       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-       http://camel.apache.org/schema/spring       http://camel.apache.org/schema/spring/camel-spring.xsd">
-
-    <!-- You could also define a traditional camel context here -->
-    <!--
-    <camelContext xmlns="http://camel.apache.org/schema/spring">
-        <route>
-            <from uri="timer://foo?period=1000"/>
-            <setBody><simple>Hello World from camel-contex.xml</simple></setBody>
-            <log message=">>> ${body}"/>
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd        http://camel.apache.org/schema/spring      http://camel.apache.org/schema/spring/camel-spring.xsd">
+    <bean
+        class="org.redhat.aarellan.fuse.http.CustomeHttpClientConfigurer" id="customHttpClientConfigurer"/>
+    <camelContext id="camelContext-71aa470a-a91a-43f6-b0c8-ec82d50b672a" xmlns="http://camel.apache.org/schema/spring">
+        <route id="Client">
+            <from id="_from1" uri="timer://foo?period=1000"/>
+            <to id="_to1" uri="http://rest-server-redhat-router.192.168.42.179.nip.io/camel-rest/data?connections-per-route=1&amp;maxTotalConnections=1&amp;httpClient&#46;cookiePolicy=ignoreCookies"/>
+            <log id="_log1" message="Req_1: Set-Cookie: ${header.Set-Cookie} - Cookie: ${header.Cookie}"/>
         </route>
     </camelContext>
-    -->
 </beans>

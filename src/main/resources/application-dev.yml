@@ -2,11 +2,7 @@ camel:
   springboot:
     # The Camel context name
     name: CamelRestClient
-  component:
-    servlet:
-      mapping:
-        enabled: true
-        context-path: /camel-rest/*
+    main-run-controller: true
 
 # Binding health checks to a different port
 # change actuator endpoints path
@@ -19,12 +15,6 @@ endpoints:
   enabled: false
   health:
     enabled: true
-
-spring:
-  # Spring JDBC configuration
-  datasource:
-    # Let Spring Boot auto-configure an embedded HSQL database
-    url:
 
 # The application configuration properties
 quickstart:
