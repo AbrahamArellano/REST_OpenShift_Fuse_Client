@@ -3,11 +3,48 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd        http://camel.apache.org/schema/spring      http://camel.apache.org/schema/spring/camel-spring.xsd">
     <bean
         class="org.redhat.aarellan.fuse.http.CustomeHttpClientConfigurer" id="customHttpClientConfigurer"/>
-    <camelContext id="camelContext-71aa470a-a91a-43f6-b0c8-ec82d50b672a" xmlns="http://camel.apache.org/schema/spring">
+    <bean class="org.redhat.aarellan.fuse.processor.ClientProcessor" id="clientProcessor"/>
+    <bean
+        class="org.redhat.aarellan.fuse.cookiehandler.NettyCookieHandlerAcceptAll" id="instanceCookieHandlerAcceptAll"/>
+    <bean
+        class="org.redhat.aarellan.fuse.cookiehandler.NettyCookieHandlerRejectAll" id="instanceCookieHandlerRejectAll"/>
+    <camelContext id="camelContext-71aa470a-a91a-43f6-b0c8-ec82d50b672a"
+        trace="true" xmlns="http://camel.apache.org/schema/spring">
         <route id="Client">
-            <from id="_from1" uri="timer://foo?period=1000"/>
-            <to id="_to1" uri="http://rest-server-redhat-router.192.168.42.179.nip.io/camel-rest/data?connections-per-route=1&amp;maxTotalConnections=1&amp;httpClient.cookiePolicy=ignoreCookies"/>
-            <log id="_log1" message="Req_1: Set-Cookie: ${header.Set-Cookie} - Cookie: ${header.Cookie}"/>
+            <from id="timer1" uri="timer://timer1?period=8000&amp;delay=2000"/>
+            <loop id="_loop1">
+                <constant>4</constant>
+                <setHeader headerName="CamelHttpMethod" id="setHeader1">
+                    <constant>GET</constant>
+                </setHeader>
+                <setHeader headerName="Cookie" id="setHeader2">
+                    <method id="cookieSetter" method="getCookie" ref="clientProcessor"/>
+                </setHeader>
+                <to id="netty1" pattern="InOut" uri="netty4-http:http:rest-server-redhat-router.192.168.42.179.nip.io:80/camel-rest/data/100?reuseChannel=true&amp;cookieHandler=#instanceCookieHandlerAcceptAll&amp;producerPoolEnabled=false&amp;producerPoolMaxActive=1&amp;producerPoolMaxIdle=1"/>
+                <process id="clientProcessorId" ref="clientProcessor"/>
+                <log id="_log1" loggingLevel="TRACE" message="Req_1: Set-Cookie: ${header.Set-Cookie} - Cookie: ${header.Cookie}"/>
+                <delay id="_delay1">
+                    <constant>1000</constant>
+                </delay>
+            </loop>
+            <removeHeaders id="_removeHeaders1" pattern="*"/>
+            <setHeader headerName="CamelHttpMethod" id="_setHeader1">
+                <constant>GET</constant>
+            </setHeader>
+            <to id="netty2" pattern="InOut" uri="netty4-http:http:rest-server-redhat-router.192.168.42.179.nip.io:80/camel-rest/data/200?producerPoolEnabled=false&amp;producerPoolMaxActive=1&amp;producerPoolMaxIdle=1&amp;reuseChannel=true"/>
+            <log id="_log1" message="Req_2: Set-Cookie: ${header.Set-Cookie} - Cookie: ${header.Cookie}"/>
+            <removeHeaders id="_removeHeaders2" pattern="*"/>
+            <setHeader headerName="CamelHttpMethod" id="_setHeader1">
+                <constant>GET</constant>
+            </setHeader>
+            <to id="netty3" pattern="InOut" uri="netty4-http:http:rest-server-redhat-router.192.168.42.179.nip.io:80/camel-rest/data/300?producerPoolEnabled=false&amp;producerPoolMaxActive=1&amp;producerPoolMaxIdle=1&amp;reuseChannel=true"/>
+            <log id="_log1" message="Req_3: Set-Cookie: ${header.Set-Cookie} - Cookie: ${header.Cookie}"/>
+            <removeHeaders id="_removeHeaders3" pattern="*"/>
+            <setHeader headerName="CamelHttpMethod" id="_setHeader1">
+                <constant>GET</constant>
+            </setHeader>
+            <to id="netty4" pattern="InOut" uri="netty4-http:http:rest-server-redhat-router.192.168.42.179.nip.io:80/camel-rest/data/400?producerPoolEnabled=false&amp;producerPoolMaxActive=1&amp;producerPoolMaxIdle=1&amp;reuseChannel=true"/>
+            <log id="_log4" message="Req_4: Set-Cookie: ${header.Set-Cookie} - Cookie: ${header.Cookie}"/>
         </route>
     </camelContext>
 </beans>

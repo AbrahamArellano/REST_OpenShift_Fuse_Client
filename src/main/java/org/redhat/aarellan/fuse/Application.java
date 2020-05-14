@@ -18,6 +18,8 @@ package org.redhat.aarellan.fuse;
 import org.apache.camel.CamelContext;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.http.HttpComponent;
+import org.apache.camel.component.netty4.http.NettyHttpComponent;
+import org.apache.camel.component.netty4.http.NettyHttpConfiguration;
 import org.apache.camel.spring.boot.SpringBootXmlCamelContextConfigurer;
 import org.redhat.aarellan.fuse.http.CustomeHttpClientConfigurer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +47,14 @@ public class Application extends SpringBootXmlCamelContextConfigurer {
         @Override
         public void configure() throws Exception {
         	HttpComponent httpComponent = getContext().getComponent("http", HttpComponent.class);
-        	httpComponent.setHttpClientConfigurer(new CustomeHttpClientConfigurer());        	
+        	httpComponent.setHttpClientConfigurer(new CustomeHttpClientConfigurer());
+        	
+        	NettyHttpComponent nettyComponent = getContext().getComponent("netty4-http", NettyHttpComponent.class);
+        	NettyHttpConfiguration configuration = nettyComponent.getConfiguration();
+        	configuration.setProducerPoolEnabled(false);
+        	configuration.setReuseChannel(true);
+        	configuration.setReuseAddress(true);
+        	configuration.setWorkerCount(1);
         }
     }
 }

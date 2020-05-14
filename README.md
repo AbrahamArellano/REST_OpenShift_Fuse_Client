@@ -9,3 +9,9 @@ mvn org.apache.maven.plugins:maven-archetype-plugin:2.4:generate \
   -DarchetypeVersion=2.2.0.fuse-sb2-760038-redhat-00001
   
 ## Deploy OpenShift
+
+### Endpoints
+http://rest-server-redhat-router.192.168.42.179.nip.io
+http://localhost:8080
+
+<to id="netty1" pattern="InOut" uri="netty4-http:http:rest-server-redhat-router.192.168.42.179.nip.io:80/camel-rest/data/100?cookieHandler=#instanceCookieHandlerAcceptAll&amp;producerPoolEnabled=false&amp;producerPoolMaxActive=1&amp;producerPoolMaxIdle=1"/>
