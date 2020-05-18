@@ -9,8 +9,8 @@
     <bean
         class="org.redhat.aarellan.fuse.cookiehandler.NettyCookieHandlerRejectAll" id="instanceCookieHandlerRejectAll"/>
     <camelContext id="camelContext-71aa470a-a91a-43f6-b0c8-ec82d50b672a"
-        trace="true" xmlns="http://camel.apache.org/schema/spring">
-        <route id="Client">
+        trace="false" xmlns="http://camel.apache.org/schema/spring">
+        <route id="Client" trace="true">
             <from id="timer1" uri="timer://timer1?period=8000&amp;delay=2000"/>
             <loop id="_loop1">
                 <constant>4</constant>
@@ -22,7 +22,7 @@
                 </setHeader>
                 <to id="netty1" pattern="InOut" uri="netty4-http:http:rest-server-redhat-router.192.168.42.179.nip.io:80/camel-rest/data/100?reuseChannel=true&amp;cookieHandler=#instanceCookieHandlerAcceptAll&amp;producerPoolEnabled=false&amp;producerPoolMaxActive=1&amp;producerPoolMaxIdle=1"/>
                 <process id="clientProcessorId" ref="clientProcessor"/>
-                <log id="_log1" loggingLevel="TRACE" message="Req_1: Set-Cookie: ${header.Set-Cookie} - Cookie: ${header.Cookie}"/>
+                <log id="_log1" loggingLevel="INFO" message="Req_1: Set-Cookie: ${header.Set-Cookie} - Cookie: ${header.Cookie}"/>
                 <delay id="_delay1">
                     <constant>1000</constant>
                 </delay>

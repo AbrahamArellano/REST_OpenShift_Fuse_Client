@@ -55,6 +55,7 @@ public class Application extends SpringBootXmlCamelContextConfigurer {
         	configuration.setReuseChannel(true);
         	configuration.setReuseAddress(true);
         	configuration.setWorkerCount(1);
+        	
         }
     }
 }

@@ -19,6 +19,7 @@ public class ClientProcessor implements Processor {
 		}
 		NettyHttpComponent nettyHttpComponent = exchange.getContext().getComponent("netty4-http", NettyHttpComponent.class);
 		NettyHttpConfiguration configuration = nettyHttpComponent.getConfiguration();
+		int port = configuration.getPort();
 
 //		System.out.println("\n***********************************");
 //		System.out.println("Response: " + exchange.getIn().);
